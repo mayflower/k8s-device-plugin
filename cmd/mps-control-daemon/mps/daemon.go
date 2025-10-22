@@ -116,16 +116,20 @@ func (d *Daemon) Start() error {
 		return err
 	}
 
-	for index, limit := range d.perDevicePinnedDeviceMemoryLimits() {
-		_, err := d.EchoPipeToControl(fmt.Sprintf("set_default_device_pinned_mem_limit %s %s", index, limit))
-		if err != nil {
-			return fmt.Errorf("error setting pinned memory limit for device %v: %w", index, err)
+	if _, ok := os.LookupEnv("CUDA_MPS_PINNED_DEVICE_MEM_LIMIT"); !ok {
+		for index, limit := range d.perDevicePinnedDeviceMemoryLimits() {
+			_, err := d.EchoPipeToControl(fmt.Sprintf("set_default_device_pinned_mem_limit %s %s", index, limit))
+			if err != nil {
+				return fmt.Errorf("error setting pinned memory limit for device %v: %w", index, err)
+			}
 		}
 	}
-	if threadPercentage := d.activeThreadPercentage(); threadPercentage != "" {
-		_, err := d.EchoPipeToControl(fmt.Sprintf("set_default_active_thread_percentage %s", threadPercentage))
-		if err != nil {
-			return fmt.Errorf("error setting active thread percentage: %w", err)
+	if _, ok := os.LookupEnv("CUDA_MPS_ACTIVE_THREAD_PERCENTAGE"); !ok {
+		if threadPercentage := d.activeThreadPercentage(); threadPercentage != "" {
+			_, err := d.EchoPipeToControl(fmt.Sprintf("set_default_active_thread_percentage %s", threadPercentage))
+			if err != nil {
+				return fmt.Errorf("error setting active thread percentage: %w", err)
+			}
 		}
 	}
 
