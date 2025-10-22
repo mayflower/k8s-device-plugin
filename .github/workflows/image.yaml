@@ -51,7 +51,7 @@ jobs:
         uses: nv-gha-runners/setup-artifactory-go-proxy@main
       - name: Build image
         env:
-          IMAGE_NAME: ghcr.io/nvidia/k8s-device-plugin
+          IMAGE_NAME: ghcr.io/mayflower/k8s-device-plugin
           VERSION: ${{ inputs.version }}
           PUSH_ON_BUILD: true
           BUILD_MULTI_ARCH_IMAGES: ${{ inputs.build_multi_arch_images }}
