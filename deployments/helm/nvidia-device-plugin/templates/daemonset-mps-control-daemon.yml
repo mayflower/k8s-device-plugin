@@ -171,6 +171,9 @@ spec:
             value: all
           - name: NVIDIA_DRIVER_CAPABILITIES
             value: compute,utility
+          {{- if .Values.extraEnv }}
+          {{- toYaml .Values.extraEnv | nindent 10 }}
+          {{- end }}
           securityContext:
             privileged: true
           volumeMounts:
@@ -183,6 +186,9 @@ spec:
             mountPath: /available-configs
           - name: config
             mountPath: /config
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
@@ -202,6 +208,9 @@ spec:
           name: {{ $configMapName }}
       - name: config
         emptyDir: {}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+      {{- toYaml .Values.extraVolumes | nindent 6 }}
       {{- end }}
       nodeSelector:
         # We only deploy this pod if the following sharing label is applied.

@@ -197,6 +197,9 @@ spec:
             value: all
           - name: NVIDIA_DRIVER_CAPABILITIES
             value: compute,utility
+        {{- if .Values.extraEnv }}
+          {{- toYaml .Values.extraEnv | nindent 10 }}
+        {{- end }}
         securityContext:
           {{- include "nvidia-device-plugin.securityContext" . | nindent 10 }}
         volumeMounts:
@@ -221,6 +224,9 @@ spec:
             mountPath: /available-configs
           - name: config
             mountPath: /config
+        {{- end }}
+        {{- if .Values.extraVolumeMounts }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
         {{- end }}
         {{- with .Values.resources }}
         resources:
@@ -254,6 +260,9 @@ spec:
             name: {{ $configMapName }}
         - name: config
           emptyDir: {}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
