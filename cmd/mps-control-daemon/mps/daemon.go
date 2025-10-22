@@ -111,7 +111,7 @@ func (d *Daemon) Start() error {
 	}
 
 	mpsDaemon := exec.Command(mpsControlBin, "-d")
-	mpsDaemon.Env = append(mpsDaemon.Env, d.EnvVars().toSlice()...)
+	mpsDaemon.Env = append(mpsDaemon.Environ(), d.EnvVars().toSlice()...)
 	if err := mpsDaemon.Run(); err != nil {
 		return err
 	}
